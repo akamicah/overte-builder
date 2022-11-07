@@ -452,6 +452,8 @@ sub get_package_list {
 		@packages = read_from_cmd("dpkg-query", "--show", "-f", "\${Package}\n");
 	} elsif ( $DD->{package_manager} eq "pacman" ) {
 		@packages = read_from_cmd("pacman", "-Qq");
+	} elseif( $DD->{package_manager} eq "apk" ) {
+		@packages = read_from_cmd("apk", "info")
 	} elsif ( $DD->{package_manager} eq "none" ) {
 		# Nothing
 	} else {
@@ -528,6 +530,8 @@ sub install_missing_packages {
 			sudo_run("pacman", "-S", "--noconfirm", @missing);
 		} elsif ( $DD->{package_manager} eq "zypper" ) {
 			sudo_run("zypper", "--non-interactive", "install", @missing);
+		} elseif( $DD->{package_manager} eq "apk" ) {
+			sudo_run("apk", "add", "--no-cache", @missing);
 		} elsif ( $DD->{package_manager} eq "none" ) {
 			# Nothing
 		} else {
@@ -579,6 +583,8 @@ sub diagnose_package_install_error {
 		} elsif ( $DD->{package_manager} eq "pacman" ) {
 			# TODO
 		} elsif ( $DD->{package_manager} eq "zypper" ) {
+			# TODO
+		} elsif ( $DD->{package_manager} eq "apk" ) {
 			# TODO
 		} elsif ( $DD->{package_manager} eq "none" ) {
 			# Nothing
